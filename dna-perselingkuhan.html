@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apakah Perselingkuhan Tertulis di DNA Kita? — KBDI</title>
+  <link rel="icon" href="https://edukbdi.github.io/logo_KBDI/kbdi_trans.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:      #0d0f14;
+      --surface: #13161e;
+      --surface2:#1a1e28;
+      --border:  rgba(255,255,255,0.07);
+      --accent:  #e87722;
+      --accent2: #f5a254;
+      --text:    #e8e6e0;
+      --muted:   rgba(232,230,224,0.45);
+      --blue:    #5b8dee;
+      --green:   #3bc47e;
+      --purple:  #a07ef5;
+    }
+    html.light {
+      --bg:      #f4f1eb;
+      --surface: #ffffff;
+      --surface2:#ede9e0;
+      --border:  rgba(0,0,0,0.08);
+      --text:    #1a1710;
+      --muted:   rgba(26,23,16,0.45);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      line-height: 1.8;
+      transition: background .3s, color .3s;
+    }
+    .article-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 0 5rem;
+    }
+    .article-body {
+      padding: 0 1.25rem;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      background: #0d0f14;
+      border-radius: 0 0 2rem 2rem;
+      padding: 5.5rem 2.5rem 3rem;
+      overflow: hidden;
+      margin-bottom: 3rem;
+    }
+    html.light .hero { background: #181c27; }
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-orb-1 { width:400px;height:400px;top:-110px;right:-90px;border:55px solid rgba(232,119,34,0.09); }
+    .hero-orb-2 { width:180px;height:180px;bottom:-50px;left:6%;border:35px solid rgba(232,119,34,0.05); }
+
+    /* Canvas DNA — PC: kanan hero, opacity normal */
+    #dnaCanvas {
+      position: absolute;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: min(130px, 30vw);
+      height: min(320px, 52vw);
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    /* ── MOBILE: hero full-width, DNA jadi background ── */
+    @media (max-width: 768px) {
+      .hero {
+        border-radius: 0;
+        padding: 6rem 1.5rem 3.5rem;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+      }
+      #dnaCanvas {
+        right: 0;
+        top: 0;
+        transform: none;
+        width: min(220px, 45vw);
+        height: 100%;
+        opacity: 0.13;
+      }
+    }
+
+    .hero-category {
+      font-size:11px; letter-spacing:3px; text-transform:uppercase;
+      color:var(--accent); font-weight:500; margin-bottom:1rem; position:relative; z-index:1;
+    }
+    .hero-title {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(1.9rem,5vw,3rem);
+      font-weight:700; color:#f4f2ed;
+      line-height:1.2; max-width:520px;
+      margin-bottom:1.4rem; position:relative; z-index:1;
+    }
+    .hero-title em { font-style:italic; color:var(--accent2); }
+    .hero-meta {
+      display:flex; flex-wrap:wrap; gap:.8rem;
+      font-size:12px; color:rgba(255,255,255,0.32);
+      position:relative; z-index:1;
+    }
+
+    /* ── LEAD ── */
+    .lead {
+      border-left:3px solid var(--accent);
+      padding:1.1rem 1.5rem;
+      background:var(--surface);
+      border-radius:0 1rem 1rem 0;
+      margin-bottom:2.5rem;
+      font-size:1.08rem;
+      font-style:italic;
+      line-height:1.8;
+    }
+
+    /* ── STAT BAND ── */
+    .stat-band {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:.75rem;
+      margin-bottom:3rem;
+    }
+    @media(max-width:520px){ .stat-band{grid-template-columns:1fr;} }
+    .stat-card {
+      background:#0d0f14;
+      border-radius:1rem;
+      padding:1.3rem 1rem;
+      text-align:center;
+      border:1px solid rgba(232,119,34,0.12);
+    }
+    html.light .stat-card { background:#181c27; }
+    .stat-num {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:2.4rem; color:var(--accent);
+      letter-spacing:1px; line-height:1;
+      display:block; margin-bottom:.4rem;
+    }
+    .stat-label { font-size:11px; color:rgba(255,255,255,0.38); line-height:1.4; display:block; }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-family:'Playfair Display',serif;
+      font-size:1.45rem; font-weight:700;
+      color:var(--text);
+      margin:2.8rem 0 1.1rem;
+      padding-bottom:.5rem;
+      border-bottom:1px solid var(--border);
+    }
+
+    p { margin-bottom:1.2rem; }
+
+    /* ── GENE CARDS ── */
+    .gene-grid {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:.75rem; margin:1.5rem 0 2rem;
+    }
+    @media(max-width:480px){ .gene-grid{grid-template-columns:1fr;} }
+    .gene-card {
+      background:var(--surface);
+      border-radius:1rem; padding:1.1rem 1.2rem;
+      border-top:3px solid;
+      transition:transform .25s;
+      cursor:default;
+    }
+    .gene-card:hover { transform:translateY(-4px); }
+    .gene-card.avpr { border-color:var(--accent); }
+    .gene-card.drd4 { border-color:var(--blue); }
+    .gene-card.oxtr { border-color:var(--green); }
+    .gene-card.slc6 { border-color:var(--purple); }
+    .gene-header { display:flex; align-items:center; gap:.6rem; margin-bottom:.55rem; }
+    .gene-icon { width:30px; height:30px; flex-shrink:0; }
+    .gene-name { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:1px; }
+    .gene-card.avpr .gene-name { color:var(--accent); }
+    .gene-card.drd4 .gene-name { color:var(--blue); }
+    .gene-card.oxtr .gene-name { color:var(--green); }
+    .gene-card.slc6 .gene-name { color:var(--purple); }
+    .gene-full { font-size:11px; color:var(--muted); margin-bottom:.45rem; }
+    .gene-desc { font-size:13px; line-height:1.6; }
+    .gene-source { font-size:11px; color:var(--accent); margin-top:.5rem; font-style:italic; }
+
+    /* Gene icon spin on hover */
+    .gene-card:hover .gene-icon { animation: spinOnce .6s ease; }
+    @keyframes spinOnce { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+
+    /* ── DONUT CHART ── */
+    .chart-wrap {
+      background:var(--surface); border-radius:1rem;
+      padding:1.5rem; display:flex;
+      align-items:center; gap:2rem;
+      margin:1.5rem 0 2rem; flex-wrap:wrap;
+    }
+    .donut-svg { flex-shrink:0; }
+    /* Donut animated fill */
+    .donut-genetic {
+      stroke-dasharray: 0 339;
+      animation: fillGenetic 1.8s ease forwards;
+      animation-play-state: paused;
+    }
+    .donut-env {
+      stroke-dasharray: 0 339;
+      animation: fillEnv 1.8s ease forwards;
+      animation-play-state: paused;
+    }
+    .donut-genetic.animate { animation-play-state: running; }
+    .donut-env.animate { animation-play-state: running; animation-delay:.2s; }
+    @keyframes fillGenetic {
+      from { stroke-dasharray: 0 339; }
+      to   { stroke-dasharray: 139 200; }
+    }
+    @keyframes fillEnv {
+      from { stroke-dasharray: 0 339; }
+      to   { stroke-dasharray: 200 139; }
+    }
+    .chart-title-block { flex:1; min-width:180px; }
+    .chart-title-block h3 { font-family:'Playfair Display',serif; font-size:1rem; margin-bottom:.8rem; }
+    .legend-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:.6rem; font-size:13px; line-height:1.4; }
+    .legend-dot { width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:2px; }
+
+    /* ── PULL QUOTE ── */
+    .pullquote {
+      border-left:4px solid var(--accent);
+      background:rgba(232,119,34,0.07);
+      border-radius:0 1rem 1rem 0;
+      padding:1.3rem 1.6rem;
+      font-family:'Playfair Display',serif;
+      font-size:1.08rem; font-style:italic;
+      line-height:1.75; margin:2rem 0;
+    }
+    .pullquote cite {
+      display:block; font-size:12px; font-style:normal;
+      color:var(--muted); margin-top:.55rem;
+      font-family:'DM Sans',sans-serif;
+    }
+
+    /* ── INFO BOX ── */
+    .infobox {
+      background:var(--surface2); border-radius:1rem;
+      padding:1.3rem 1.5rem; margin:1.5rem 0;
+      border:1px solid var(--border);
+    }
+    .infobox-title {
+      font-size:12px; font-weight:500; letter-spacing:2px;
+      text-transform:uppercase; color:var(--accent); margin-bottom:.7rem;
+    }
+    .infobox ul { padding-left:1.2rem; font-size:14px; line-height:1.75; }
+    .infobox ul li { margin-bottom:.25rem; }
+
+    /* ── ANALOGY BOX ── */
+    .analogy {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:1rem;
+      padding:1.3rem 1.5rem;
+      margin:1.5rem 0;
+      position:relative;
+    }
+    .analogy-emoji {
+      font-size:2rem; margin-bottom:.5rem; display:block;
+      animation: bobble 2s ease-in-out infinite;
+    }
+    @keyframes bobble {
+      0%,100%{transform:translateY(0);}
+      50%{transform:translateY(-5px);}
+    }
+    .analogy-label { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:.4rem; }
+    .analogy p { font-size:14px; margin:0; }
+
+    /* ── CONCLUSION ── */
+    .conclusion {
+      background:linear-gradient(135deg,rgba(232,119,34,0.09),rgba(232,119,34,0.03));
+      border:1px solid rgba(232,119,34,0.2);
+      border-radius:1rem; padding:1.6rem 1.8rem; margin-top:2rem;
+    }
+    .conclusion-label { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:.8rem; }
+    .conclusion p { font-family:'Playfair Display',serif; font-size:1.05rem; line-height:1.75; }
+
+    /* ── SOURCES ── */
+    .sources {
+      background:var(--surface); border-radius:1rem;
+      padding:1.3rem 1.5rem; margin-top:3rem;
+    }
+    .sources-title {
+      font-size:11px; font-weight:500; letter-spacing:2px;
+      text-transform:uppercase; color:var(--muted); margin-bottom:1rem;
+    }
+    .source-item {
+      font-size:12px; color:var(--muted);
+      padding:.5rem 0; border-bottom:1px solid var(--border); line-height:1.5;
+    }
+    .source-item:last-child { border-bottom:none; }
+    .source-num { color:var(--accent); font-weight:500; margin-right:6px; }
+
+    /* ── DIVIDER ── */
+    .divider { display:flex;align-items:center;gap:1rem;margin:2.5rem 0;color:var(--muted);font-size:12px; }
+    .divider::before,.divider::after { content:'';flex:1;height:1px;background:var(--border); }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal { opacity:0; transform:translateY(22px); transition:opacity .6s ease,transform .6s ease; }
+    .reveal.visible { opacity:1; transform:none; }
+  </style>
+</head>
+<body>
+
+<main class="article-wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+
+    <!-- Canvas DNA Helix (rotating, like CRISPR) -->
+    <canvas id="dnaCanvas" aria-hidden="true"></canvas>
+
+    <div class="hero-category">Biologi · KBDI Editorial</div>
+    <h1 class="hero-title">Apakah Perselingkuhan <em>Tertulis</em> di DNA Kita?</h1>
+    <div class="hero-meta">
+      <span>KBDI Editorial</span>
+      <span>·</span>
+      <span>Biologi &amp; Psikologi Evolusioner</span>
+      <span>·</span>
+      <span>±8 menit baca</span>
+    </div>
+  </section>
+
+  <div class="article-body">
+
+  <!-- LEAD -->
+  <div class="lead reveal">
+    Sains modern menemukan bahwa kesetiaan bukan cuma soal moral — ada gen dan hormon yang ikut campur. Tapi apakah itu berarti berselingkuh sudah "ditakdirkan" sejak lahir? Ternyata jawabannya lebih kompleks dari itu.
+  </div>
+
+  <!-- STAT BAND -->
+  <div class="stat-band reveal">
+    <div class="stat-card">
+      <span class="stat-num">~41%</span>
+      <span class="stat-label">Perbedaan perilaku perselingkuhan pada perempuan yang bisa dijelaskan oleh gen (Cherkas et al., 2004)</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">50%</span>
+      <span class="stat-label">Lebih tingginya kasus selingkuh pada pemilik varian gen DRD4-7R+ (Garcia et al., 2010)</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">4</span>
+      <span class="stat-label">Gen utama yang sudah diteliti hubungannya dengan kesetiaan dalam pasangan</span>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2 class="section-title reveal">Apa Urusan Gen dengan Cinta?</h2>
+
+  <p class="reveal">Selama ini kita memahami perselingkuhan sebagai soal pilihan moral — seseorang berselingkuh karena dia memang "tidak setia." Tapi sejak tahun 1990-an, para ilmuwan mulai menemukan sesuatu yang mengejutkan: gen tertentu dalam tubuh kita ternyata ikut memengaruhi seberapa kuat kita "terikat" pada satu pasangan.</p>
+
+  <p class="reveal">Ini bukan berarti ada "gen selingkuh" yang bisa dijadikan alasan. Yang ditemukan lebih seperti ini: beberapa orang memiliki variasi gen yang membuat otak mereka bekerja sedikit berbeda dalam hal ikatan emosional, rasa puas, dan pencarian pengalaman baru. Dan itu bisa memengaruhi perilaku mereka dalam hubungan.</p>
+
+  <div class="analogy reveal">
+    <span class="analogy-emoji">🎲</span>
+    <div class="analogy-label">Analogi Sederhana</div>
+    <p>Bayangkan gen seperti kartu yang kamu pegang saat main poker. Kartu yang bagus belum tentu menang — tergantung cara mainnya. Gen mungkin memberi kecenderungan tertentu, tapi pilihan tetap di tangan kamu.</p>
+  </div>
+
+  <!-- GENE CARDS -->
+  <h2 class="section-title reveal">Empat Gen yang Jadi Sorotan Ilmuwan</h2>
+
+  <p class="reveal">Ini adalah gen-gen yang paling banyak diteliti dalam kaitannya dengan kesetiaan dan ikatan dalam hubungan:</p>
+
+  <div class="gene-grid reveal">
+
+    <!-- AVPR1A -->
+    <div class="gene-card avpr">
+      <div class="gene-header">
+        <svg class="gene-icon" viewBox="0 0 30 30" fill="none">
+          <!-- Animated double helix mini -->
+          <path d="M8 4 C16 10, 16 15, 8 21 C0 27, 0 27, 8 27" stroke="#e87722" stroke-width="2" stroke-linecap="round" fill="none">
+            <animate attributeName="stroke-dasharray" from="0 100" to="100 0" dur="1.5s" fill="freeze"/>
+          </path>
+          <path d="M22 4 C14 10, 14 15, 22 21 C30 27, 30 27, 22 27" stroke="#f5a254" stroke-width="2" stroke-linecap="round" fill="none">
+            <animate attributeName="stroke-dasharray" from="0 100" to="100 0" dur="1.5s" begin="0.3s" fill="freeze"/>
+          </path>
+          <line x1="8" y1="8" x2="22" y2="8" stroke="rgba(232,119,34,0.5)" stroke-width="1.2">
+            <animate attributeName="opacity" from="0" to="1" dur=".4s" begin="1s" fill="freeze"/>
+          </line>
+          <line x1="10" y1="14" x2="20" y2="14" stroke="rgba(232,119,34,0.4)" stroke-width="1.2">
+            <animate attributeName="opacity" from="0" to="1" dur=".4s" begin="1.2s" fill="freeze"/>
+          </line>
+          <line x1="8" y1="20" x2="22" y2="20" stroke="rgba(232,119,34,0.5)" stroke-width="1.2">
+            <animate attributeName="opacity" from="0" to="1" dur=".4s" begin="1.4s" fill="freeze"/>
+          </line>
+        </svg>
+        <span class="gene-name">AVPR1A</span>
+      </div>
+      <div class="gene-full">Gen Reseptor Vasopressin</div>
+      <div class="gene-desc">Vasopressin adalah hormon yang bikin kita merasa "terikat" dengan seseorang. Pria dengan variasi gen ini tertentu cenderung lebih sering melaporkan masalah dalam pernikahan mereka.</div>
+      <div class="gene-source">Walum et al., PNAS 2008</div>
+    </div>
+
+    <!-- DRD4 -->
+    <div class="gene-card drd4">
+      <div class="gene-header">
+        <svg class="gene-icon" viewBox="0 0 30 30" fill="none">
+          <circle cx="15" cy="15" r="5" stroke="#5b8dee" stroke-width="2" fill="none">
+            <animateTransform attributeName="transform" type="rotate" from="0 15 15" to="360 15 15" dur="4s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="15" cy="15" r="2" fill="#5b8dee">
+            <animate attributeName="r" values="2;3;2" dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+          <line x1="15" y1="3" x2="15" y2="10" stroke="#5b8dee" stroke-width="1.5"/>
+          <line x1="15" y1="20" x2="15" y2="27" stroke="#5b8dee" stroke-width="1.5"/>
+          <line x1="3" y1="15" x2="10" y2="15" stroke="#5b8dee" stroke-width="1.5"/>
+          <line x1="20" y1="15" x2="27" y2="15" stroke="#5b8dee" stroke-width="1.5"/>
+        </svg>
+        <span class="gene-name">DRD4</span>
+      </div>
+      <div class="gene-full">Gen Reseptor Dopamin</div>
+      <div class="gene-desc">Dopamin adalah zat kimia otak yang bikin kita merasa senang dan puas. Orang dengan variasi 7R+ butuh "stimulasi" lebih besar untuk merasa puas — termasuk dalam hubungan. Ini bisa mendorong pencarian pengalaman baru.</div>
+      <div class="gene-source">Garcia et al., PLoS ONE 2010</div>
+    </div>
+
+    <!-- OXTR -->
+    <div class="gene-card oxtr">
+      <div class="gene-header">
+        <svg class="gene-icon" viewBox="0 0 30 30" fill="none">
+          <!-- Two figures getting close -->
+          <circle cx="10" cy="10" r="3" stroke="#3bc47e" stroke-width="1.8" fill="none">
+            <animate attributeName="cx" values="10;11;10" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="20" cy="10" r="3" stroke="#3bc47e" stroke-width="1.8" fill="none">
+            <animate attributeName="cx" values="20;19;20" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <path d="M6 22 C6 17, 14 17, 14 22" stroke="#3bc47e" stroke-width="1.8" stroke-linecap="round" fill="none">
+            <animate attributeName="d" values="M6 22 C6 17, 14 17, 14 22;M7 22 C7 17, 13 17, 13 22;M6 22 C6 17, 14 17, 14 22" dur="2s" repeatCount="indefinite"/>
+          </path>
+          <path d="M16 22 C16 17, 24 17, 24 22" stroke="#3bc47e" stroke-width="1.8" stroke-linecap="round" fill="none">
+            <animate attributeName="d" values="M16 22 C16 17, 24 17, 24 22;M17 22 C17 17, 23 17, 23 22;M16 22 C16 17, 24 17, 24 22" dur="2s" repeatCount="indefinite"/>
+          </path>
+        </svg>
+        <span class="gene-name">OXTR</span>
+      </div>
+      <div class="gene-full">Gen Reseptor Oksitosin</div>
+      <div class="gene-desc">Oksitosin sering disebut "hormon cinta" — dilepaskan saat pelukan, kontak fisik, atau momen intim. Variasi pada gen reseptornya memengaruhi seberapa kuat seseorang merasakan ikatan emosional dengan pasangannya.</div>
+      <div class="gene-source">Walum et al., 2012</div>
+    </div>
+
+    <!-- SLC6A4 -->
+    <div class="gene-card slc6">
+      <div class="gene-header">
+        <svg class="gene-icon" viewBox="0 0 30 30" fill="none">
+          <!-- Wave = mood/emotion -->
+          <path d="M3 15 C7 9, 11 21, 15 15 C19 9, 23 21, 27 15" stroke="#a07ef5" stroke-width="2" stroke-linecap="round" fill="none">
+            <animate attributeName="d"
+              values="M3 15 C7 9, 11 21, 15 15 C19 9, 23 21, 27 15;M3 15 C7 12, 11 18, 15 15 C19 12, 23 18, 27 15;M3 15 C7 9, 11 21, 15 15 C19 9, 23 21, 27 15"
+              dur="2s" repeatCount="indefinite"/>
+          </path>
+          <circle cx="15" cy="7" r="2.5" fill="#a07ef5">
+            <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+        <span class="gene-name">SLC6A4</span>
+      </div>
+      <div class="gene-full">Gen Transporter Serotonin</div>
+      <div class="gene-desc">Serotonin mengatur suasana hati dan emosi kita. Orang dengan variasi tertentu pada gen ini lebih sensitif terhadap konflik dalam hubungan — dan lebih cepat merasa tidak puas jika hubungan mulai bermasalah.</div>
+      <div class="gene-source">Gotlib et al., PMC 2014</div>
+    </div>
+
+  </div>
+
+  <!-- SECTION 2 -->
+  <h2 class="section-title reveal">Pelajaran dari Tikus Padang Rumput</h2>
+
+  <p class="reveal">Kisah ini sebenarnya berawal dari dua jenis tikus yang sangat mirip tapi sangat berbeda kelakuannya. <em>Vole padang rumput</em> hidupnya monogami — setia pada satu pasangan seumur hidup. Tapi sepupunya, <em>vole tanah</em>, malah poligami — berganti-ganti pasangan.</p>
+
+  <p class="reveal">Bedanya apa? Ilmuwan menemukan bahwa perbedaan utamanya ada di satu gen: AVPR1A. Gen ini mengatur seberapa banyak reseptor vasopressin yang ada di bagian otak yang mengurus ikatan sosial. Vole yang setia punya lebih banyak reseptor itu — jadi mereka "merasakan" ikatan lebih kuat.</p>
+
+  <p class="reveal">Penemuan ini mendorong tim ilmuwan dari Karolinska Institutet (Swedia) untuk meneliti: apakah hal yang sama berlaku pada manusia? Mereka meneliti lebih dari 1.000 pasang kembar beserta pasangan mereka, dan hasilnya terbit di jurnal ilmiah bergengsi <em>PNAS</em> pada tahun 2008.</p>
+
+  <div class="pullquote reveal">
+    "Perbedaan dalam gen reseptor vasopressin dapat memengaruhi cara seseorang berikatan secara emosional — bukan karena kehendak, tapi karena cara otak mereka bekerja."
+    <cite>— Hasse Walum et al., PNAS 2008</cite>
+  </div>
+
+  <!-- SECTION 3 - DONUT -->
+  <h2 class="section-title reveal">Seberapa Besar Peran Gen?</h2>
+
+  <p class="reveal">Para ilmuwan punya cara cerdik untuk memisahkan pengaruh gen dari pengaruh lingkungan: membandingkan kembar identik (gen persis sama) dengan kembar fraternal (gen berbeda seperti saudara biasa). Jika kembar identik lebih sering punya perilaku yang sama dibanding kembar fraternal, berarti ada pengaruh genetik di sana.</p>
+
+  <p class="reveal">Lynn Cherkas dari King's College London melakukan ini khusus untuk perselingkuhan pada perempuan. Hasilnya cukup mengejutkan:</p>
+
+  <!-- Animated donut -->
+  <div class="chart-wrap reveal" id="donutWrap">
+    <svg class="donut-svg" width="140" height="140" viewBox="0 0 140 140">
+      <!-- track -->
+      <circle cx="70" cy="70" r="54" fill="none" stroke="#1a1e28" stroke-width="26"/>
+      <!-- genetic slice -->
+      <circle class="donut-genetic" id="donutGenetic"
+        cx="70" cy="70" r="54" fill="none" stroke="#e87722" stroke-width="26"
+        stroke-dasharray="0 339" transform="rotate(-90 70 70)"/>
+      <!-- env slice -->
+      <circle class="donut-env" id="donutEnv"
+        cx="70" cy="70" r="54" fill="none" stroke="#5b8dee" stroke-width="26"
+        stroke-dasharray="0 339" transform="rotate(-90 70 70)" stroke-dashoffset="-139"/>
+      <text x="70" y="65" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="22" fill="#e87722">~41%</text>
+      <text x="70" y="82" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9" fill="rgba(255,255,255,0.4)">genetik</text>
+    </svg>
+    <div class="chart-title-block">
+      <h3>Kontribusi Gen pada Perselingkuhan Perempuan</h3>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#e87722;"></div>
+        <span>~41% perbedaan perilaku bisa dijelaskan oleh faktor genetik</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#5b8dee;"></div>
+        <span>~59% dipengaruhi lingkungan, nilai, dan pilihan hidup</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:.7rem;">Sumber: Cherkas et al. (2004), <em>Twin Research and Human Genetics</em></div>
+    </div>
+  </div>
+
+  <div class="analogy reveal">
+    <span class="analogy-emoji">💡</span>
+    <div class="analogy-label">Apa artinya angka 41% ini?</div>
+    <p>Bukan berarti "41% orang yang selingkuh disebabkan oleh gen." Artinya: dari semua perbedaan perilaku yang ada di antara orang-orang, sekitar 41% bisa dikaitkan dengan perbedaan genetik mereka. Sisanya? Dari pengalaman hidup, budaya, dan pilihan sadar.</p>
+  </div>
+
+  <!-- SECTION 4 -->
+  <h2 class="section-title reveal">Gen Dopamin: Otak yang Selalu Lapar</h2>
+
+  <p class="reveal">Dopamin adalah zat kimia di otak yang memberi rasa senang dan puas. Ketika kamu makan makanan enak, dapat kabar baik, atau jatuh cinta — dopamin yang berperan. Nah, gen DRD4 mengatur seberapa "sensitif" reseptor dopamin di otakmu.</p>
+
+  <p class="reveal">Orang dengan variasi DRD4-7R+ punya reseptor yang kurang sensitif. Artinya, mereka butuh stimulasi lebih besar untuk merasa puas. Dalam konteks hubungan, ini bisa muncul sebagai kebutuhan terus-menerus akan hal-hal baru — perhatian baru, pengalaman baru, atau bahkan orang baru.</p>
+
+  <div class="infobox reveal">
+    <div class="infobox-title">Yang Ditemukan Garcia et al. (2010) di PLoS ONE</div>
+    <ul>
+      <li>Meneliti 181 mahasiswa dengan mengambil sampel DNA dari usapan mulut</li>
+      <li>Pemilik varian 7R+ lebih sering mengaku pernah <em>one-night stand</em></li>
+      <li>Kasus perselingkuhan 50% lebih tinggi dibanding yang tidak punya varian ini</li>
+      <li>Berlaku sama pada pria dan perempuan</li>
+      <li>Catatan penting: jumlah sampelnya masih kecil, perlu penelitian lebih lanjut</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 5 -->
+  <h2 class="section-title reveal">Oksitosin dan Serotonin: Dua Pemain Lain</h2>
+
+  <p class="reveal">Selain vasopressin dan dopamin, ada dua pemain lain. Oksitosin — yang sering disebut "hormon pelukan" — dilepaskan tubuh saat kita menyentuh, memeluk, atau berbagi momen intim dengan seseorang. Gen OXTR mengatur seberapa baik tubuh kita merespons oksitosin ini. Variasi tertentu pada gen ini dikaitkan dengan ikatan emosional yang lebih lemah dan kesulitan berempati kepada pasangan.</p>
+
+  <p class="reveal">Sementara serotonin berperan dalam menjaga suasana hati tetap stabil. Orang dengan variasi tertentu pada gen SLC6A4 cenderung lebih sensitif secara emosional — ketika ada konflik dalam hubungan, mereka lebih cepat merasa tidak puas, dan itu bisa mendorong mereka mencari "ketenangan" di tempat lain.</p>
+
+  <!-- SECTION 6 -->
+  <h2 class="section-title reveal">Lalu, Apakah Ini Berarti Takdir?</h2>
+
+  <p class="reveal">Tidak. Dan para ilmuwan sendiri yang paling tegas mengatakan ini.</p>
+
+  <p class="reveal">Semua studi di atas hanya menemukan <em>korelasi</em> — hubungan statistik — bukan sebab-akibat langsung. Punya varian DRD4-7R+ tidak berarti kamu pasti akan berselingkuh. Sama seperti punya gen risiko untuk tekanan darah tinggi tidak berarti kamu pasti akan kena hipertensi.</p>
+
+  <div class="infobox reveal">
+    <div class="infobox-title">Hal-Hal Penting yang Perlu Diingat</div>
+    <ul>
+      <li>Tidak ada "gen selingkuh" tunggal — perilaku ini dipengaruhi ratusan faktor</li>
+      <li>Beberapa penelitian masih menggunakan sampel kecil dari populasi terbatas</li>
+      <li>Lingkungan, pola asuh, nilai moral, dan kualitas hubungan punya pengaruh besar</li>
+      <li>Gen bisa "dihidupkan atau dimatikan" oleh pengalaman hidup (epigenetik)</li>
+      <li>Satu studi saja belum cukup — ilmu pengetahuan butuh replikasi berkali-kali</li>
+    </ul>
+  </div>
+
+  <p class="reveal">Yang paling penting: antara punya kecenderungan dan benar-benar melakukan sesuatu, ada pilihan. Dan pilihan itu adalah sepenuhnya milik kita.</p>
+
+  <div class="divider reveal">&#9670; &#9670; &#9670;</div>
+
+  <!-- CONCLUSION -->
+  <div class="conclusion reveal">
+    <div class="conclusion-label">Kesimpulan</div>
+    <p>Perselingkuhan tidak tertulis di DNA kita sebagai takdir. Yang mungkin tertulis adalah kecenderungan — predisposisi biologis kecil yang bisa memengaruhi bagaimana otak kita merespons hubungan. Tapi antara kecenderungan dan tindakan, ada jarak yang sangat lebar. Di sanalah pilihan, nilai, dan komitmen bekerja. Gen memberi kita kartu. Kita sendiri yang memilih cara memainkannya.</p>
+  </div>
+
+  <!-- SOURCES -->
+  <div class="sources reveal">
+    <div class="sources-title">Sumber &amp; Referensi</div>
+    <div class="source-item"><span class="source-num">[1]</span>Walum, H. et al. (2008). Genetic variation in the vasopressin receptor 1a gene (AVPR1A) associates with pair-bonding behavior in humans. <em>PNAS</em>, 105(37), 14153–14156.</div>
+    <div class="source-item"><span class="source-num">[2]</span>Garcia, J.R. et al. (2010). Associations between dopamine D4 receptor gene variation with both infidelity and sexual promiscuity. <em>PLoS ONE</em>, 5(11): e14162.</div>
+    <div class="source-item"><span class="source-num">[3]</span>Cherkas, L.F. et al. (2004). Genetic influences on female infidelity and number of sexual partners in humans. <em>Twin Research and Human Genetics</em>, 7(6), 649–658.</div>
+    <div class="source-item"><span class="source-num">[4]</span>Walum, H. et al. (2012). Variation in the oxytocin receptor gene (OXTR) is associated with pair-bonding and social behavior. <em>PLoS ONE</em>, PMC3266986.</div>
+    <div class="source-item"><span class="source-num">[5]</span>Zietsch, B.P. et al. (2015). Genetic analysis of human extrapair mating. <em>Evolution and Human Behavior</em>.</div>
+    <div class="source-item"><span class="source-num">[6]</span>Gotlib, I.H. et al. (2014). The 5-HTTLPR polymorphism moderates the association between emotional behavior and changes in marital satisfaction. <em>PMC</em> 4067734.</div>
+  </div><!-- /sources -->
+
+  </div><!-- /article-body -->
+
+</main>
+
+<script>
+  const savedTheme = localStorage.getItem('kbdi-theme');
+  if (savedTheme === 'light') document.documentElement.classList.add('light');
+
+  fetch('https://edukbdi.github.io/header.html')
+    .then(r => r.text())
+    .then(html => {
+      document.body.insertAdjacentHTML('afterbegin', html);
+      const header = document.getElementById('kbdi-header');
+      if (savedTheme === 'light') header.classList.add('kbdi-light');
+      document.getElementById('kbdiThemeToggle').addEventListener('click', function() {
+        const isLight = document.documentElement.classList.toggle('light');
+        header.classList.toggle('kbdi-light', isLight);
+        localStorage.setItem('kbdi-theme', isLight ? 'light' : 'dark');
+        const footer = document.getElementById('kbdi-footer');
+        if (footer) footer.classList.toggle('kbdi-light', isLight);
+      });
+    });
+
+  fetch('https://edukbdi.github.io/footer.html')
+    .then(r => r.text())
+    .then(html => {
+      document.body.insertAdjacentHTML('beforeend', html);
+      const footer = document.getElementById('kbdi-footer');
+      if (footer && savedTheme === 'light') footer.classList.add('kbdi-light');
+    });
+
+  // ── CANVAS DNA HELIX (rotating, like CRISPR) ──
+  (function() {
+    const canvas = document.getElementById('dnaCanvas');
+    if (!canvas) return;
+
+    // Set canvas resolution dari ukuran CSS yang sudah di-render
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width  = rect.width  || Math.min(220, window.innerWidth * 0.45);
+      canvas.height = rect.height || canvas.parentElement.offsetHeight || 400;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', () => { resizeCanvas(); });
+
+    const ctx = canvas.getContext('2d');
+
+    // Config
+    const RUNGS  = 18;
+    const SPEED  = 0.018;
+    const COLOR1 = '#e87722';
+    const COLOR2 = '#f5a254';
+    const RUNG_A = 'rgba(232,119,34,';
+    const NODE_R = 4;
+
+    let angle = 0;
+    let raf;
+
+    function draw() {
+      const W  = canvas.width;
+      const H  = canvas.height;
+      const cx = W / 2;
+      const AMP      = W * 0.34;       // lebar ayunan proporsional lebar canvas
+      const RUNG_GAP = H / RUNGS;
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Kumpulkan titik per strand untuk tiap rung
+      const points1 = [];
+      const points2 = [];
+
+      for (let i = 0; i <= RUNGS; i++) {
+        const y = i * RUNG_GAP;
+        const phase = angle + (i / RUNGS) * Math.PI * 4; // 2 putaran penuh
+        const x1 = cx + Math.sin(phase) * AMP;
+        const x2 = cx - Math.sin(phase) * AMP;
+        points1.push({ x: x1, y });
+        points2.push({ x: x2, y });
+      }
+
+      // Gambar rungs (tangga) dulu — di belakang strand
+      for (let i = 0; i < RUNGS; i++) {
+        const p1 = points1[i];
+        const p2 = points2[i];
+        const phase = angle + (i / RUNGS) * Math.PI * 4;
+        // Opacity berdasarkan kedalaman 3D (sin phase): depan lebih terang
+        const depth = (Math.sin(phase) + 1) / 2;   // 0..1
+        const alpha = 0.2 + depth * 0.55;
+
+        // Tangga hanya digambar di "depan" (bukan di belakang strand)
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = RUNG_A + alpha.toFixed(2) + ')';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // Gambar strand 1
+      ctx.beginPath();
+      ctx.moveTo(points1[0].x, points1[0].y);
+      for (let i = 1; i <= RUNGS; i++) {
+        ctx.lineTo(points1[i].x, points1[i].y);
+      }
+      ctx.strokeStyle = COLOR1;
+      ctx.lineWidth = 2.5;
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
+      // Gambar strand 2
+      ctx.beginPath();
+      ctx.moveTo(points2[0].x, points2[0].y);
+      for (let i = 1; i <= RUNGS; i++) {
+        ctx.lineTo(points2[i].x, points2[i].y);
+      }
+      ctx.strokeStyle = COLOR2;
+      ctx.lineWidth = 2.5;
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
+      // Gambar nodes di tiap rung
+      for (let i = 0; i <= RUNGS; i++) {
+        const phase = angle + (i / RUNGS) * Math.PI * 4;
+        const depth = (Math.sin(phase) + 1) / 2;
+        const r = NODE_R * (0.65 + depth * 0.55); // node depan lebih besar
+
+        // Node strand 1
+        ctx.beginPath();
+        ctx.arc(points1[i].x, points1[i].y, r, 0, Math.PI * 2);
+        ctx.fillStyle = COLOR1;
+        ctx.globalAlpha = 0.6 + depth * 0.4;
+        ctx.fill();
+
+        // Node strand 2
+        ctx.beginPath();
+        ctx.arc(points2[i].x, points2[i].y, r, 0, Math.PI * 2);
+        ctx.fillStyle = COLOR2;
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      angle += SPEED;
+      raf = requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    // Stop saat tab tidak aktif (hemat resource)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(raf);
+      else draw();
+    });
+  })();
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // Trigger donut animation when chart comes into view
+        if (e.target.id === 'donutWrap') {
+          document.getElementById('donutGenetic').classList.add('animate');
+          document.getElementById('donutEnv').classList.add('animate');
+        }
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
